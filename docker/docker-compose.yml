@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # Next.js Web アプリケーション
+  morizo-web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.web
+    container_name: morizo-web
+    ports:
+      - "3000:3000"   # Next.js Web
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password@morizo-postgres:5432/morizo
+      - REDIS_URL=redis://morizo-redis:6379
+      - JWT_SECRET=your-jwt-secret-key-here
+      - NEXT_PUBLIC_SUPABASE_URL=https://kxfygkylipqqpzbayfje.supabase.co
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4Znlna3lsaXBxcXB6YmF5ZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwODg1MTIsImV4cCI6MjA3MzY2NDUxMn0.AG97lp6tT9fhZl4IrpauCjisBms1PLPZ2BkH5OQtrqQ
+    depends_on:
+      - morizo-postgres
+      - morizo-redis
+      - morizo-supabase
+    networks:
+      - app-network
+
+  # Expo Mobile アプリケーション
+  morizo-mobile:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.mobile
+    container_name: morizo-mobile
+    ports:
+      - "8081:8081"   # Expo Dev Server
+      - "19000:19000" # Expo Web
+      - "19001:19001" # Expo DevTools
+      - "19006:19006" # Expo Tunnel
+    environment:
+      - NODE_ENV=development
+      - EXPO_PUBLIC_SUPABASE_URL=https://kxfygkylipqqpzbayfje.supabase.co
+      - EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4Znlna3lsaXBxcXB6YmF5ZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwODg1MTIsImV4cCI6MjA3MzY2NDUxMn0.AG97lp6tT9fhZl4IrpauCjisBms1PLPZ2BkH5OQtrqQ
+      - EXPO_PUBLIC_API_URL=http://morizo-web:3000
+    depends_on:
+      - morizo-web
+    networks:
+      - app-network
+
+  # PostgreSQL データベース
+  morizo-postgres:
+    image: postgres:15-alpine
+    container_name: morizo-postgres
+    environment:
+      - POSTGRES_DB=morizo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # Redis (キャッシュ用)
+  morizo-redis:
+    image: redis:7-alpine
+    container_name: morizo-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  # Supabase (ローカル開発用)
+  morizo-supabase:
+    image: supabase/postgres:15.1.0.117
+    container_name: morizo-supabase
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - supabase_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  supabase_data:
+
+networks:
+  app-network:
+    driver: bridge
