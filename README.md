@@ -101,8 +101,12 @@ npx create-expo-app@latest . --template blank-typescript
 # 依存関係をインストール
 npm install
 
-# 開発サーバーを起動（tunnelモード）
+# 開発サーバーを起動
+# Expo Goで実機確認する場合（Android/iOS端末）
 npx expo start --tunnel
+
+# Webブラウザで簡易確認する場合
+npx expo start --web
 ```
 
 ## アクセス先

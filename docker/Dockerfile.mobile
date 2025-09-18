@@ -27,6 +27,11 @@ RUN npm install -g \
     @types/node@latest \
     create-expo-app@latest
 
+# Webブラウザ対応のための依存関係をグローバルインストール
+RUN npm install -g \
+    react-dom@latest \
+    react-native-web@latest
+
 # yarnをインストール
 RUN npm install -g yarn@latest --force
 
