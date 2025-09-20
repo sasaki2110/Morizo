@@ -9,12 +9,6 @@ services:
     container_name: morizo-web
     ports:
       - "3000:3000"   # Next.js Web
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_SUPABASE_URL=https://kxfygkylipqqpzbayfje.supabase.co
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4Znlna3lsaXBxcXB6YmF5ZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwODg1MTIsImV4cCI6MjA3MzY2NDUxMn0.AG97lp6tT9fhZl4IrpauCjisBms1PLPZ2BkH5OQtrqQ
-      # Vercel Postgresの接続情報は環境変数で設定
-      # DATABASE_URL=postgresql://username:password@host:port/database
     networks:
       - app-network
 
@@ -29,11 +23,6 @@ services:
       - "19000:19000" # Expo Web
       - "19001:19001" # Expo DevTools
       - "19006:19006" # Expo Tunnel
-    environment:
-      - NODE_ENV=development
-      - EXPO_PUBLIC_SUPABASE_URL=https://kxfygkylipqqpzbayfje.supabase.co
-      - EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4Znlna3lsaXBxcXB6YmF5ZmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwODg1MTIsImV4cCI6MjA3MzY2NDUxMn0.AG97lp6tT9fhZl4IrpauCjisBms1PLPZ2BkH5OQtrqQ
-      - EXPO_PUBLIC_API_URL=http://morizo-web:3000
     depends_on:
       - morizo-web
     networks:
